@@ -1,0 +1,98 @@
+/*
+This is the 'slave' Arduino.  It should receive a wireless signal
+from the 'master' Due.  Currently the signal should just be an 'a' or
+'b' to decide on/off status.
+
+
+
+*/
+
+#include <SoftwareSerial.h>
+
+SoftwareSerial transmit(2, 3); // RX, TX
+
+String command = "";
+char temp;
+int blue = 12;
+byte state = 0;
+
+
+void setup()
+{
+  // Open serial communications and wait for port to open:
+  Serial.begin(1200);
+  pinMode(blue, OUTPUT);
+ 
+   // set the data rate for the SoftwareSerial port
+  transmit.begin(1200);
+  //System is ready to recieve commands
+  transmit.println("Enter the command ON: ");
+ // check_for.reserve(30);
+  
+}
+
+void loop() 
+{        
+ 
+  
+  
+   /* if (transmit.available())
+  {
+    
+   
+   for(int i = 0; i< 6; i++)
+      {
+       
+        temp = transmit.read();
+        command.concat(temp);
+        
+          if (command == "turn1")
+              {
+                digitalWrite(blue, HIGH);
+                Serial.println("ON");
+                transmit.write('1');
+                state = 1;
+                command = "";
+                
+                while (state ==1)
+                  {
+                    if(command ==  "turn0")
+                      {
+                        digitalWrite(blue, LOW);
+                        Serial.println("ON");      
+                        transmit.write('1');
+                        state =0;
+                      }
+                  }
+              }
+      }
+      
+  }  */           
+       if (transmit.read() == 'a')
+        {
+          digitalWrite(blue, HIGH);
+          Serial.println("ON");
+          state = 1;
+          Serial.println(transmit.read());
+          while (state == 1)
+            {
+            if(transmit.read() == 'b')
+                {
+              digitalWrite(blue, LOW);
+              Serial.println("OFF");
+              state = 0;
+                }         
+            }
+  
+        }    
+  if (transmit.available())
+  {
+    Serial.write(transmit.read());
+  }
+  if (Serial.available())
+  {
+    transmit.write(Serial.read());
+   
+  }
+  
+}

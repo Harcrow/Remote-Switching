@@ -1,0 +1,45 @@
+/* 
+
+Building the Due for 'Master' useage in the Remote Switching 
+Research project.
+
+The primary goal will be to send Serial String commands to the 
+'slave' arduino, that will then turn a relay pin on and off
+
+*/
+byte i = 2;
+
+String command_on = "a";
+String command_off = "b";
+byte state = 0;
+
+void setup()
+{
+  // Open serial communications and wait for port to open:
+  Serial.begin(1200);
+  //Opens communication channel with Xbee at 1200 baud
+  Serial3.begin(1200);
+  //System is ready to recieve commands
+  Serial.println("Enter the command ON: ");
+  
+  
+}
+
+
+void loop() 
+{
+
+     Serial3.println(command_on);
+     Serial.println(command_on);
+     
+  
+     delay(10000);
+     
+     Serial3.println(command_off);
+     Serial.println(command_off);
+     
+     delay(10000);
+    
+  
+}
+    

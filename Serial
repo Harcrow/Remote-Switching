@@ -2,97 +2,84 @@
 This is the 'slave' Arduino.  It should receive a wireless signal
 from the 'master' Due.  Currently the signal should just be an 'a' or
 'b' to decide on/off status.
-
-
-
 */
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial transmit(2, 3); // RX, TX
+SoftwareSerial xbee(2, 3); // RX, TX
 
 String command = "";
+String turn_on = "turn1";
+String turn_off = "turn0";
+
 char temp;
 int blue = 12;
 byte state = 0;
-
+boolean complete = false;
 
 void setup()
 {
-  // Open serial communications and wait for port to open:
-  Serial.begin(1200);
-  pinMode(blue, OUTPUT);
+ // Open serial communications and wait for port to open:
+ Serial.begin(1200);
  
-   // set the data rate for the SoftwareSerial port
-  transmit.begin(1200);
-  //System is ready to recieve commands
-  transmit.println("Enter the command ON: ");
+ pinMode(blue, OUTPUT);
+ 
+ // set the data rate for the SoftwareSerial port
+ xbee.begin(1200);
+ //System is ready to recieve commands
+ Serial.println("Systems go ");
  // check_for.reserve(30);
   
 }
 
 void loop() 
-{        
- 
-  
-  
-   /* if (transmit.available())
-  {
-    
-   
-   for(int i = 0; i< 6; i++)
-      {
-       
-        temp = transmit.read();
-        command.concat(temp);
+{      
+//Serial.write("Why");
+     while(xbee.available() && xbee.peek() != '\n')
+         {
+           //building the string
+           temp = xbee.read();
+           command.concat(temp);
+           Serial.println(command);
+           //printing the serial so we understand what it's reading
+         }
         
-          if (command == "turn1")
-              {
-                digitalWrite(blue, HIGH);
-                Serial.println("ON");
-                transmit.write('1');
-                state = 1;
-                command = "";
-                
-                while (state ==1)
-                  {
-                    if(command ==  "turn0")
-                      {
-                        digitalWrite(blue, LOW);
-                        Serial.println("ON");      
-                        transmit.write('1');
-                        state =0;
-                      }
-                  }
-              }
-      }
+      if(xbee.peek() == '\n')
+         {
+               //letting us know we're done and printing the recieved command  
+               Serial.println("Command Complete: "  + command);
+               //clearing the '\n' from the buffer
+               temp = xbee.read();
+               complete = true;
+         }    
+     
       
-  }  */           
-       if (transmit.read() == 'a')
-        {
-          digitalWrite(blue, HIGH);
-          Serial.println("ON");
-          state = 1;
-          Serial.println(transmit.read());
-          while (state == 1)
-            {
-            if(transmit.read() == 'b')
-                {
-              digitalWrite(blue, LOW);
-              Serial.println("OFF");
-              state = 0;
-                }         
-            }
-  
-        }    
-  if (transmit.available())
-  {
-    Serial.write(transmit.read());
+if (complete == true)
+  { 
+    Serial.println("i am comparing values");
+//       if(command == "turn1")
+//       {
+         digitalWrite(blue, HIGH);
+         Serial.println("LED should be on ");
+//       }
+//       Serial.println("Turn on command failed");
+       
+//       if(command == turn_off)
+//       {
+  delay(1000);
+         digitalWrite(blue, LOW);
+         Serial.println("LED should be OFF");
+//       }
+       
+       Serial.println("Turn off command failed");
+     //reset the command
+     command = "";
+     //reset complete
+     complete = false;
   }
-  if (Serial.available())
-  {
-    transmit.write(Serial.read());
-   
-  }
-  
+ 
+ 
+ 
+ 
+      
 }

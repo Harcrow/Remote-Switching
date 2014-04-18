@@ -55,31 +55,39 @@ void loop()
      
       
 if (complete == true)
-  { 
-    Serial.println("i am comparing values");
-//       if(command == "turn1")
-//       {
-         digitalWrite(blue, HIGH);
-         Serial.println("LED should be on ");
-//       }
-//       Serial.println("Turn on command failed");
-       
-//       if(command == turn_off)
-//       {
-  delay(1000);
-         digitalWrite(blue, LOW);
-         Serial.println("LED should be OFF");
-//       }
-       
-       Serial.println("Turn off command failed");
-     //reset the command
-     command = "";
-     //reset complete
-     complete = false;
-  }
- 
- 
- 
- 
+        {
+          
+          command.trim(); 
+          Serial.println("Checking for command string");
+         
+        /* 
+        
+             This was the debug to find out if the code was appending a white space
+             to the end of the 'command' string.
+             Turns out it was happeneing, so the command.trim() function (above) fixed it.
+          len = command.length();
+          Serial.println(len);
+          len = command.length();
+          Serial.println(len);
+        */
+          if(command == "turn1")
+             {
+               digitalWrite(blue, HIGH);
+               Serial.println("LED should be on ");
+             }
+             Serial.println("Turn on command failed");
+             
+          if(command == turn_off)
+             {
+               digitalWrite(blue, LOW);
+               Serial.println("LED should be OFF");
+             }
+             
+             Serial.println("Turn off command failed");
+           //reset the command
+           command = "";
+           //reset complete
+           complete = false;
+        }
       
 }
